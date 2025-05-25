@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String      @id @default(cuid())
+  email      String?     @unique
+  name       String?
+  interviews Interview[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Interview {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  resumeText     String          @db.Text
+  resumeUrl      String?
+  jobDescription String          @db.Text
+  position       String
+  company        String?
+  difficulty     Difficulty      @default(MEDIUM)
+  status         InterviewStatus @default(ACTIVE)
+  messages       Message[]
+  feedback       Feedback?
+  analytics      Analytics?
+  startedAt      DateTime        @default(now())
+  endedAt        DateTime?
+  
+  @@index([userId])
+  @@index([status])
+}
+
+model Message {
+  id          String    @id @default(cuid())
+  interviewId String
+  interview   Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  role        Role
+  content     String    @db.Text
+  confidence  Float?
+  audioUrl    String?
+  responseTime Int?     // in seconds
+  wordCount   Int?
+  createdAt   DateTime  @default(now())
+  
+  @@index([interviewId])
+}
+
+model Feedback {
+  id                 String    @id @default(cuid())
+  interviewId        String    @unique
+  interview          Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  overallRating      Int       // 1-10
+  technicalScore     Int       // 1-10
+  communicationScore Int       // 1-10
+  problemSolving     Int       // 1-10
+  cultureFit         Int       // 1-10
+  strengths          Json      // Array of strings
+  improvements       Json      // Array of strings
+  detailedFeedback   String    @db.Text
+  recommendations    Json      // Array of recommendation objects
+  nextSteps          Json      // Array of strings
+  createdAt          DateTime  @default(now())
+}
+
+model Analytics {
+  id              String    @id @default(cuid())
+  interviewId     String    @unique
+  interview       Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  avgResponseTime Float     // Average seconds per response
+  totalDuration   Int       // Total interview minutes
+  questionsAsked  Int
+  vocabularyLevel Float     // 1-10 complexity score
+  fillerWordCount Int       // um, uh, like, etc.
+  confidenceScore Float     // Overall confidence 0-1
+  clarityScore    Float     // How clear responses were
+  topicsCovered   Json      // Which areas were discussed
+  createdAt       DateTime  @default(now())
+}
+
+enum InterviewStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+  ANALYZING
+}
+
+enum Role {
+  AI
+  USER
+  SYSTEM
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  EXPERT
+}

@@ -1,0 +1,27 @@
+{
+  "name": "nora-ai-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.8.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "groq-sdk": "^0.22.0",
+    "multer": "^2.0.0",
+    "openai": "^4.103.0",
+    "pdf-parse": "^1.1.1",
+    "prisma": "^6.8.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
