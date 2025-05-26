@@ -65,3 +65,7 @@ npx prisma generate
 npm run dev
 
 Server will run on <http://localhost:5000>
+
+🔗 Frontend Integration
+This backend is designed to work with the AI Interview Frontend.
+Frontend repository: <https://github.com/arfat-sayyed/ai-interview-frontend.git>
